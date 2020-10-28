@@ -1,7 +1,11 @@
+//
+// Created by zj on 2020/10/28.
+//
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "http/http.h"
+#include "http/httplib.h"
+#include "downloadModule/HttpClient.h"
 #include <cstdio>
 using namespace httplib;
 using namespace std;
@@ -28,31 +32,73 @@ const char *html = R"(
 
 std::string log(const Request &req, const Response &res);
 
+
+size_t write_offset = 0;
+FILE *testfile = fopen("./1.jpg", "wb");
+//the callback handler
+bool recvData(std::string chunk){
+    //usleep(1000000U);
+//    std::cerr << "Chunk No. " << count++ << ": " << chunk << std::endl;
+    fwrite(chunk.c_str(), chunk.size(), write_offset, testfile);
+    write_offset += chunk.size();
+    return true;
+}
+
 int main(void) {
 
     Server svr;
 
+
+//    httplib::Client cli1("https://test-1301539759.cos.ap-guangzhou.myqcloud.com/public/huaping010RA0126_20200725194830_1.jpg");
+//
+//    const Headers headers;
+//    ContentReceiver content_receiver;
+//
+//    Progress progress;
+
+//    auto res = cli1.Get("/public/huaping010RA0126_20200725194830_1.jpg",headers,content_receiver);
+//    auto res = cli1.Get("/public/huaping010RA0126_20200725194830_1.jpg",headers,content_receiver,progress);
+//    auto res = cli1.Get("/public/huaping010RA0126_20200725194830_1.jpg", nullptr,recvData);
+
+    //    httplib::Client cli1("http://news.baidu.com");
+//    auto res = cli1.Get("/guonei");
+//    cout<<res->status<<endl;
+//    auto  content = res->content_provider_;
+//
+//    cout<<res->body<<endl;
+//    content_receiver
+
+//    if(cli1.is_valid())
+//        cout<<"hello"<<endl;
+
+
     //file download
-    svr.Get("/hi", [](const Request & /*req*/, Response &res) {
-        string image_url = "https://test-1301539759.cos.ap-guangzhou.myqcloud.com/public/huaping/993VA0104_20200725155144_10.jpg";
+    static int num = 0;
+    static int flag = 0;
+    svr.Post("/download", [](const Request &req, Response &res) {
+//        Client cli(const_cast<char*>("download"));
+        HttpClient client;
+        cout<<endl<<endl<<"num: "<<++num<<endl;
+        if(flag == 0)
+            flag = 1;
+        else
+            flag = 0;
+        for(int i=0;i<3;i++){
+            string temp = "img_url" + to_string(i+1);
+            const char *key = temp.c_str();
+            auto formdataUrl = req.get_file_value(key);
 
-        Client cli(const_cast<char*>(image_url.c_str()));
-        auto pos = find(image_url.rbegin(), image_url.rend(), '/');
-        string img_name = image_url.substr(distance(pos, image_url.rend()));
-        cout<<img_name<<endl;
-        string save_dir = "../save/";
+            string image_url = formdataUrl.content;
+            auto pos = find(image_url.rbegin(), image_url.rend(), '/');
 
-        cli.downloadAs(image_url,save_dir+img_name);
+            string img_name = to_string(flag) + image_url.substr(distance(pos, image_url.rend()));
+            cout<<img_name<<endl;
+            string save_dir = "/home/zj/a_program/httplib/save/";
 
-        res.set_content("Hello World!121212121", "text/plain");
-    });
+            client.downloadAs(image_url,save_dir+img_name);
+        }
 
-    svr.Post("/hp", [](const Request &req, Response &res) {
-        auto image_file = req.get_file_value("img_url");
-//        std::cout << image_file.content.length() << std::endl;
-//        std::cout << image_file.name << std::endl;
-//        std::cout << image_file.content << std::endl;
-        res.set_content(image_file.content, "text/plain");
+        res.set_content("download!!", "text/plain");
     });
 
     // file upload
