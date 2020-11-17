@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,libdownload.so -o ../../../lib/libdownload.so CMakeFiles/download.dir/HttpClient.cpp.o -lcurl 

@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/http_test.dir/main.cpp.o  -o http_test -Wl,-rpath,/home/zj/new_tech/http_cpp/lib -pthread ../lib/libhttp.a ../lib/libdownload.so ../lib/libCJSON.a -lcurl 
