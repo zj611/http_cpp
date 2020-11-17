@@ -121,6 +121,8 @@ void HttpClient::initCURL()
     //    curl_easy_setopt(m_curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);	// support basic, digest, and NTLM authentication
     // try not to use signals
     curl_easy_setopt(m_curl, CURLOPT_NOSIGNAL, 1L);
+
+    curl_easy_setopt( m_curl, CURLOPT_TIMEOUT, 3 );
     
     // set a default user agent
     curl_easy_setopt(m_curl, CURLOPT_USERAGENT, curl_version());

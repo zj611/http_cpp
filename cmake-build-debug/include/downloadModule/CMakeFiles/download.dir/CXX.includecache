@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zj/new_tech/http_cpp/include/downloadModule/Common.h
+iostream
+-
+string
+-
+vector
+-
+map
+-
+set
+-
+queue
+-
+unordered_map
+-
+unordered_set
+-
+algorithm
+-
+functional
+-
+
+/home/zj/new_tech/http_cpp/include/downloadModule/HttpClient.cpp
+HttpClient.h
+/home/zj/new_tech/http_cpp/include/downloadModule/HttpClient.h
+
+/home/zj/new_tech/http_cpp/include/downloadModule/HttpClient.h
+Common.h
+/home/zj/new_tech/http_cpp/include/downloadModule/Common.h
+curl/curl.h
+-
+curl/easy.h
+-
+
